@@ -10,18 +10,23 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import integrationtest.mock.database.mysql.MysqlConfigurationDatabase;
 import integrationtest.mock.mailing.EmailMessage;
 import integrationtest.mock.mailing.SMTPServer;
 
 public class TestStarter {
 	public static void main(String[] args) throws Exception {
-		SMTPServer server = new SMTPServer();
-		server.startServer();
-		send();
-		List<EmailMessage> mailsSortant = server.getEmailSortantSFromAdresse("web@gmail.com");
-		System.out.println(mailsSortant.size());
-		List<EmailMessage> mailsentrants = server.getEmailEntrantFromAdresse("abcd@gmail.com");
-		System.out.println(mailsentrants.size());
+		
+		MysqlConfigurationDatabase databse = new MysqlConfigurationDatabase();
+		databse.start();
+		
+//		SMTPServer server = new SMTPServer();
+//		server.startServer();
+//		send();
+//		List<EmailMessage> mailsSortant = server.getEmailSortantSFromAdresse("web@gmail.com");
+//		System.out.println(mailsSortant.size());
+//		List<EmailMessage> mailsentrants = server.getEmailEntrantFromAdresse("abcd@gmail.com");
+//		System.out.println(mailsentrants.size());
 	}
 
 	public static void send() {

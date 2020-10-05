@@ -2,6 +2,7 @@ package integrationtest.mock.database.mysql;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
@@ -10,18 +11,17 @@ import com.wix.mysql.EmbeddedMysql;
 import com.wix.mysql.config.MysqldConfig;
 import com.wix.mysql.distribution.Version;
 
-import lombok.Builder;
+import integrationtest.commun.PropertiesLoader;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Builder
 @Getter
+@AllArgsConstructor
 public class MysqlConfigurationDatabase {
 
 	private EmbeddedMysql mysql;
 
 	private MysqldConfig config;
-
-	private List<String> databases;
 
 	private TimeZone timezone;
 
@@ -29,26 +29,20 @@ public class MysqlConfigurationDatabase {
 
 	private String password;
 
-	@Builder.Default
+	private Integer port;
+
 	private List<DatabaseBuidler> databaseBuilders = new ArrayList<DatabaseBuidler>();
 
-	/**
-	 * Uses custom builder class
-	 */
-	public static MysqlConfigurationDatabaseBuilder builder() {
-		return new CustomPMysqlConfigurationDatabaseBuilder();
-	}
-
-	/**
-	 * Cusotm builder class
-	 */
-	private static class CustomPMysqlConfigurationDatabaseBuilder extends MysqlConfigurationDatabaseBuilder {
-		@Override
-		public MysqlConfigurationDatabase build() {
-			super.config = MysqldConfig.aMysqldConfig(Version.v5_7_19).withPort(8889).withTimeZone(super.timezone)
-					.withUser(super.user, super.password).build();
-			return super.build();
-		}
+	public MysqlConfigurationDatabase() {
+		PropertiesLoader properties = new PropertiesLoader();
+		this.user = properties.getValue("integrationtools.database.mysql.user");
+		this.password = properties.getValue("integrationtools.database.mysql.password");
+		this.port = Integer.valueOf(properties.getValue("integrationtools.database.mysql.port"));
+		this.timezone = TimeZone
+				.getTimeZone(ZoneId.of(properties.getValue("integrationtools.database.mysql.timezone")));
+		config = MysqldConfig
+				.aMysqldConfig(Version.valueOf(properties.getValue("integrationtools.database.mysql.version")))
+				.withPort(this.port).withTimeZone(timezone).withUser(user, password).build();
 	}
 
 	public void start() {
@@ -67,10 +61,10 @@ public class MysqlConfigurationDatabase {
 	}
 
 	public MysqlDatabaseRequest getConnection(String database) throws SQLException, ClassNotFoundException {
-		return MysqlDatabaseRequest
-				.builder().conn(DriverManager.getConnection("jdbc:mysql://localhost:" + config.getPort() + "/"
-						+ database + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", this.user, this.password))
-				.build();
+		return MysqlDatabaseRequest.builder().conn(DriverManager.getConnection("jdbc:mysql://localhost:"
+				+ config.getPort() + "/" + database
+				+ "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC",
+				this.user, this.password)).build();
 	}
 
 }
