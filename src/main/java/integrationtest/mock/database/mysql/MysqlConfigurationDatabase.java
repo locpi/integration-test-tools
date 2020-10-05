@@ -67,8 +67,9 @@ public class MysqlConfigurationDatabase {
 	}
 
 	public MysqlDatabaseRequest getConnection(String database) throws SQLException, ClassNotFoundException {
-		return MysqlDatabaseRequest.builder().conn(DriverManager
-				.getConnection("jdbc:mysql://localhost:" + config.getPort() + "/" + database, this.user, this.password))
+		return MysqlDatabaseRequest
+				.builder().conn(DriverManager.getConnection("jdbc:mysql://localhost:" + config.getPort() + "/"
+						+ database + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", this.user, this.password))
 				.build();
 	}
 

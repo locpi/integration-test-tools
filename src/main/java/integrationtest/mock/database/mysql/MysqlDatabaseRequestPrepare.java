@@ -1,7 +1,10 @@
 package integrationtest.mock.database.mysql;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import lombok.Builder;
 
@@ -27,6 +30,22 @@ public class MysqlDatabaseRequestPrepare {
 		} catch (SQLException e) {
 			throw new Exception(e.getMessage());
 		}
+	}
+
+	public static class TypeChampHelper {
+
+		public static Date stringToDate(String date, String pattern) {
+			SimpleDateFormat format = new SimpleDateFormat(pattern);
+			java.util.Date parsed;
+			try {
+				parsed = format.parse(date);
+				return new java.sql.Date(parsed.getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+
 	}
 
 }
