@@ -16,6 +16,10 @@ public class PropertiesLoader {
 	public Object getValue(String key, Object defaultValue) {
 		return getInstance().getOrDefault(key, defaultValue);
 	}
+	
+	public String getValue(String key, String defaultValue) {
+		return (String) getInstance().getOrDefault(key, defaultValue);
+	}
 
 	public String getValue(String key) {
 		return (String) getInstance().get(key);

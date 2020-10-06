@@ -11,6 +11,7 @@ import com.wix.mysql.EmbeddedMysql;
 import com.wix.mysql.config.MysqldConfig;
 import com.wix.mysql.distribution.Version;
 
+import integrationtest.commun.Logger;
 import integrationtest.commun.PropertiesLoader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MysqlConfigurationDatabase {
+
+	private final static Logger LOG = Logger.getInstance(MysqlConfigurationDatabase.class);
 
 	private EmbeddedMysql mysql;
 
@@ -34,6 +37,7 @@ public class MysqlConfigurationDatabase {
 	private List<DatabaseBuidler> databaseBuilders = new ArrayList<DatabaseBuidler>();
 
 	public MysqlConfigurationDatabase() {
+		LOG.debug("------------------- INIT DATABASE------------------------");
 		PropertiesLoader properties = new PropertiesLoader();
 		this.user = properties.getValue("integrationtools.database.mysql.user");
 		this.password = properties.getValue("integrationtools.database.mysql.password");
