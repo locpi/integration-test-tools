@@ -1,0 +1,5 @@
+integrationtest.bouchons
+integrationtest.commun
+integrationtest.mock.database.mysql
+integrationtest.mock.mailing
+integrationtest.performance
